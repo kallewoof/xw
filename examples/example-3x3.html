@@ -1,0 +1,168 @@
+
+<html>
+    <head>
+    <script>
+    function conv(s) {
+        var map = {
+            あ: "ア",い: "イ",う: "ウ",え: "エ",お: "オ",
+            ぁ: "ア",ぃ: "イ",ぅ: "ウ",ぇ: "エ",ぉ: "オ",
+            ァ: "ア",ィ: "イ",ゥ: "ウ",ェ: "エ",ォ: "オ",
+            か: "カ",き: "キ",く: "ク",け: "ケ",こ: "コ",
+            ヵ: "カ",ヶ: "ケ",
+            が: "ガ",ぎ: "ギ",ぐ: "グ",げ: "ゲ",ご: "ゴ",
+            さ: "サ",し: "シ",す: "ス",せ: "セ",そ: "ソ",
+            じ: "ジ",
+            ま: "マ",み: "ミ",む: "ム",め: "メ",も: "モ",
+            な: "ナ",に: "ニ",ぬ: "ヌ",ね: "ネ",の: "ノ",
+            ら: "ラ",り: "リ",る: "ル",れ: "レ",ろ: "ロ",
+            は: "ハ",ひ: "ヒ",ふ: "フ",へ: "ヘ",ほ: "ホ",
+            ば: "バ",び: "ビ",ぶ: "ブ",べ: "ベ",ぼ: "ボ",
+            ぱ: "パ",ぴ: "ピ",ぷ: "プ",ぺ: "ペ",ぽ: "ポ",
+            た: "タ",ち: "チ",つ: "ツ",て: "テ",と: "ト",
+            だ: "ダ",ぢ: "ヂ",づ: "ヅ",で: "デ",ど: "ド",っ: "ツ",ッ: "ツ",
+            や: "ヤ",ゆ: "ユ",よ: "ヨ",
+            ゃ: "ヤ",ゅ: "ユ",ょ: "ヨ",
+            ャ: "ヤ",ュ: "ユ",ョ: "ヨ",
+            ゔ: "ヴ",
+            を: "ヲ",ん: "ン",
+        };
+        var t = '';
+        for (var ch of s) {
+            t += ch in map ? map[ch] : ch;
+        }
+        return t.replace(/&amp;/,"&").replace(/&lt;/, "<").replace(/&gt;/, ">");
+    }
+    var actual = {0: {0: "フ",2: "ブ",},1: {0: "ス",1: "ワ",2: "リ",},2: {0: "マ",1: "ア",},};
+    var letters = {horiz: {3: 3, 5: 2, }, vert: {1: 3, 2: 2, 4: 2, }};
+    var coords = {x: {1: 0, 2: 2, 3: 0, 4: 1, 5: 0, }, y: {1: 0, 2: 0, 3: 1, 4: 1, 5: 2, }};
+    function check_answers() {
+        for (var x = 0; x < 3; ++x) {
+            for (var y = 0; y < 3; ++y) {
+                if (actual[y][x]) {
+                    var answer = document.getElementById('c' + x + '_' + y).innerHTML.trim();
+                    var el = document.getElementById('td' + x + '_' + y);
+                    var correct = actual[y][x] == answer;
+                    el.classList.remove(correct ? 'wrong' : 'correct');
+                    el.classList.add(correct ? 'correct' : 'wrong');
+                }
+            }
+        }
+    }
+    function get(index, horiz) {
+        var x = coords.x[index];
+        var y = coords.y[index];
+        var len = letters[horiz ? 'horiz' : 'vert'][index];
+        var rv = '';
+        if (horiz) {
+            for (var i = x; i < x + len; ++i) {
+                var ch = document.getElementById('c' + i + '_' + y).innerHTML;
+                rv += ch == '　' ? '' : ch;
+            }
+        } else {
+            for (var i = y; i < y + len; ++i) {
+                var ch = document.getElementById('c' + x + '_' + i).innerHTML;
+                rv += ch == '　' ? '' : ch;
+            }
+        }
+        return rv;
+    }
+    function set(index, horiz, s) {
+        var x = coords.x[index];
+        var y = coords.y[index];
+        var len = letters[horiz ? 'horiz' : 'vert'][index];
+        if (horiz) {
+            for (var i = 0; i < len; ++i) {
+                document.getElementById('c' + (x + i) + '_' + y).innerHTML = s[i];
+            }
+        } else {
+            for (var i = 0; i < len; ++i) {
+                document.getElementById('c' + x + '_' + (y + i)).innerHTML = s[i];
+            }
+        }
+    }
+    function insert(index, horiz) {
+      var answer = conv(document.getElementById('in_' + (horiz ? 'horiz' : 'vert')).value);
+      if (answer.length != letters[horiz ? 'horiz' : 'vert'][index]) {
+          return false;
+      }
+      set(index, horiz, answer);
+      document.getElementById('in_' + (horiz ? 'horiz' : 'vert')).value = answer;
+      var other = document.getElementById('in_' + (horiz ? 'vert' : 'horiz'));
+      if (other) other.value = get(index, !horiz);
+    }
+    function fill_pad(index) {
+        var horiz = {
+            3: "sitting; stability", 5: "just (e.g. \"just wait here\"); come now; now, now; tolerably; passably; moderately; reasonably; fairly; rather; somewhat; well...; I think...; it would seem...; you might say...; Hmmm, I guess so...; oh!; oh dear!; oh, my!; wow!; goodness gracious!; good heavens!",
+        };
+        var vert = {
+            1: "fusuma; Japanese sliding screen", 2: "style; manner; way; after (period of time) again (e.g. meeting again after a year); for the first time in (period of time)", 4: "wow!; oh!; eek!; gee!; yeah!; alright!; hurray!; waah!; boohoo!",
+        };
+        var pad = document.getElementById('pad');
+        var newcontent = '';
+        if (horiz[index]) {
+            var curr = get(index, true);
+            newcontent += '<p><strong>横</strong> ' + index + ': ' + horiz[index] + '</p>' + '<form onsubmit="javascript:insert(' + index + ', true); return false;"><input type="text" id="in_horiz" value="' + (curr || '') + '"></input></form>';
+        }
+        if (vert[index]) {
+            var curr = get(index, false);
+            newcontent += '<p><strong>縦</strong> ' + index + ': ' + vert[index] + '</p>' + '<form onsubmit="javascript:insert(' + index + ', false); return false;"><input type="text" id="in_vert" value="' + (curr || '') + '"></input></form>';
+        }
+        pad.innerHTML = newcontent;
+    }
+    </script>
+    <style>
+    table {
+        background: #555;
+        border-spacing: 1px;
+    }
+    td {
+        spacing: 0px;
+        height: 54px;
+        width: 54px;
+        background: #fff;
+    }
+    td.correct {
+        background: #cfc;
+    }
+    td.wrong {
+        background: #fcc;
+    }
+    .cell-wall {
+        background: #999;
+    }
+    span.index {
+        float: left;
+        margin-left: 0px;
+        margin-top: -15px;
+        font-size: 8pt;
+    </style>
+    </head>
+    <body>
+    <table cellspacing="0"><tr class="even">
+	<td id="td0_0" onclick="javascript:fill_pad(1);" class="cell-index" style="height: 54px;"><span class="index">1</span><span id="c0_0" class="letter">　</span></td>
+	<td class="cell-wall" style="height: 54px;"></td>
+	<td id="td2_0" onclick="javascript:fill_pad(2);" class="cell-index" style="height: 54px;"><span class="index">2</span><span id="c2_0" class="letter">　</span></td>
+</tr>
+<tr class="odd">
+	<td id="td0_1" onclick="javascript:fill_pad(3);" class="cell-index" style="height: 54px;"><span class="index">3</span><span id="c0_1" class="letter">　</span></td>
+	<td id="td1_1" onclick="javascript:fill_pad(4);" class="cell-index" style="height: 54px;"><span class="index">4</span><span id="c1_1" class="letter">　</span></td>
+	<td id="td2_1" class="cell-blank" style="height: 54px;"><span id="c2_1" class="letter">　</span></td>
+</tr>
+<tr class="even">
+	<td id="td0_2" onclick="javascript:fill_pad(5);" class="cell-index" style="height: 54px;"><span class="index">5</span><span id="c0_2" class="letter">　</span></td>
+	<td id="td1_2" class="cell-blank" style="height: 54px;"><span id="c1_2" class="letter">　</span></td>
+	<td class="cell-wall" style="height: 54px;"></td>
+</tr>
+</table>
+    <br/>
+    <div id="pad">
+    </div>
+    <table style="width: 80%;"><tr><td style="vertical-align:top; width: 50%;"><center>横</center><br/><ul><li onclick="javascript:fill_pad(3);">3: sitting; stability</li><li onclick="javascript:fill_pad(5);">5: just (e.g. "just wait here"); come now; now, now; tolerably; passably; moderately; reasonably; fairly; rather; somewhat; well...; I think...; it would seem...; you might say...; Hmmm, I guess so...; oh!; oh dear!; oh, my!; wow!; goodness gracious!; good heavens!</li></ul>
+</td><td style="vertical-align: top; width: 50%;"><center>縦</center><br/><ul><li onclick="javascript:fill_pad(1);">1: fusuma; Japanese sliding screen</li><li onclick="javascript:fill_pad(2);">2: style; manner; way; after (period of time) again (e.g. meeting again after a year); for the first time in (period of time)</li><li onclick="javascript:fill_pad(4);">4: wow!; oh!; eek!; gee!; yeah!; alright!; hurray!; waah!; boohoo!</li></ul>
+</td></tr></table>
+    <br/>
+    <div>
+    <button type="button" onclick="javascript:check_answers();">確認する</button><br/><br/>
+    </div>
+    </body>
+    </html>
