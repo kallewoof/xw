@@ -158,7 +158,18 @@ for (const e of entries) {
                             entry += `${entry === "" ? "" : "; "}${e}`;
                         }
                     }
-                    if (s.s_inf) entry += "【" + Unwrap(s.s_inf).join('; ') + "】";
+                    if (s.s_inf) {
+                        const inf = Unwrap(s.s_inf).filter((v: string) => {
+                            if (v !== romaji(v)) return false;
+                            for (const k of Unwrap(e.k_ele)) {
+                                if (v.indexOf(k.keb) > -1) return false;
+                            }
+                            return true;
+                        });
+                        if (inf.length > 0) {
+                            entry += "【" + inf.join('; ') + "】";
+                        }
+                    }
                     if (entry === '') continue;
                     entry = (contains(s.pos, '&n-suf;') ? '(名詞・敬称) ' : '') +
                             (contains(s.pos, '&suf;') ? '(敬称) ' : '') +
