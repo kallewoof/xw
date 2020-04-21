@@ -1,5 +1,5 @@
 {
-  "name": "built/index.js",
+  "name": "xw",
   "types": "built/index.d.ts",
   "version": "0.0.1",
   "description": "XW",
@@ -20,13 +20,9 @@
   },
   "homepage": "https://github.com/kallewoof/xw#readme",
   "dependencies": {
-    "@types/mongoose": "^5.7.12",
     "@types/node": "^13.13.0",
     "fast-xml-parser": "^3.16.0",
     "he": "^1.2.0",
-    "mongodb": "^3.5.6",
-    "mongoose": "^5.9.9",
-    "net": "^1.0.2",
     "typescript": "^3.8.3"
   },
   "files": [
