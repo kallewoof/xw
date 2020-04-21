@@ -145,7 +145,9 @@ for (const e of entries) {
             const moddeda = conv(moddedr);
             if (moddedr === moddeda) continue; // no katakana stuff
             let gloss = "";
+            let colloquial = true;
             for (const s of sense) {
+                colloquial = colloquial && contains(s.misc, '&col;');
                 if (s.gloss) {
                     let entry = '';
                     for (const e of Unwrap(s.gloss)) {
@@ -177,7 +179,7 @@ for (const e of entries) {
                     gloss += (gloss === '' ? '' : '; ') + entry;
                 }
             }
-            if (answer.length === 1) continue;
+            if (colloquial || gloss === '' || answer.length === 1) continue;
             const question = typeof gloss === "string" ? conv(gloss) : gloss;
             console.log(`${answer}\n${question}`);
         }
