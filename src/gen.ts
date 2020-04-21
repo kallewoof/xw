@@ -208,6 +208,7 @@ const main = async () => {
             newcontent += '<p><strong>縦</strong> ' + index + ': ' + vert[index] + '</p>' + '<form onsubmit="javascript:insert(' + index + ', false); return false;"><input type="text" id="in_vert" value="' + (curr || '') + '"></input></form>';
         }
         pad.innerHTML = newcontent;	
+        document.getElementById(horiz[index] ? 'in_horiz' : 'in_vert').focus();
     }
     </script>
     <style>
