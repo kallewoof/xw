@@ -21,7 +21,7 @@
   "homepage": "https://github.com/kallewoof/xw#readme",
   "dependencies": {
     "@types/node": "^13.13.0",
-    "fast-xml-parser": "^3.16.0",
+    "fast-xml-parser": "^4.2.4",
     "he": "^1.2.0",
     "typescript": "^3.8.3"
   },
